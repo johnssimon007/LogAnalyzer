@@ -9,7 +9,7 @@ import (
   "github.com/common-nighthawk/go-figure"
 )
 
-func LogAnalyze(fn string,content string, ch chan bool) {
+func LogAnalyze(fn string,content string) {
 
   var pattern = regexp.MustCompile(content)
 
@@ -42,7 +42,7 @@ func LogAnalyze(fn string,content string, ch chan bool) {
       }
     }
 
-	ch<-true
+
 					reads.Close()
     }
 
@@ -53,7 +53,6 @@ func LogAnalyze(fn string,content string, ch chan bool) {
 
 }
 func regex_file(fn string){
-	ch:=make(chan bool,300)
   read, err := os.Open("regex.conf")
 	if err == nil {
 		file_read := bufio.NewScanner(read)
@@ -65,11 +64,10 @@ func regex_file(fn string){
       var check bool=comment.MatchString(content)
 
              if !check{
-      go LogAnalyze(fn,content,ch)
+      LogAnalyze(fn,content)
 
 }
 
-	<-ch
 		}
 
 		read.Close()
