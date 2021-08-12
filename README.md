@@ -1,6 +1,7 @@
 # LogAnalyzer
 Analyze logs with custom regex patterns.Can search for particular patterns on multiple files in a directory.
 
+![Screenshot](screenshot.png)
 
 # usage
 
