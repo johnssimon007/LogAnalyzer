@@ -6,10 +6,11 @@ import (
 	"fmt"
 	"github.com/common-nighthawk/go-figure"
 	"os"
+	"reflect"
 	"regexp"
 )
 
-func LogAnalyze(fn string, content string) {
+func LogAnalyze(fn string, content string , keys reflect.Value) {
 
 	var pattern = regexp.MustCompile(content)
 
@@ -32,7 +33,7 @@ func LogAnalyze(fn string, content string) {
 
 					if result[0] != "" {
 
-						fmt.Printf(string("\033[31m Found %v match in %s \033[34m %s \n"), len(result), fn+v.Name(), result)
+						fmt.Printf(string("\033[31m Found %v match(%s) in %s \033[34m %s \n"), len(result),keys, fn+v.Name(), result)
 
 					}
 
@@ -47,7 +48,9 @@ func LogAnalyze(fn string, content string) {
 	}
 
 }
+
 func regex_file(fn string) {
+	m:=make(map[string]bool)
 	read, err := os.Open("regex.conf")
 	if err == nil {
 		file_read := bufio.NewScanner(read)
@@ -57,9 +60,19 @@ func regex_file(fn string) {
 			content := file_read.Text()
 			var comment = regexp.MustCompile(`^#.*`)
 			var check bool = comment.MatchString(content)
+			if check==true{
+        m[content]=true
+			}
 
 			if !check {
-				LogAnalyze(fn, content)
+				keys := reflect.ValueOf(m).MapKeys()
+				if(len(keys)==0){
+				 continue
+				}else
+				{
+					LogAnalyze(fn, content,keys[len(keys)-1])
+
+				}
 
 			}
 
